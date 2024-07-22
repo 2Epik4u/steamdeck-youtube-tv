@@ -3,9 +3,9 @@ const { ElectronBlocker } = require('@cliqz/adblocker-electron')
 const { fetch } = require('cross-fetch') // required 'fetch'
 var fs = require("fs");
 const configPath = "./yt-config.json";
-const defaultConfig = {
+const defaultConfig = { // Steam deck default resolution isnt supported
     "width": "1280",
-    "height": "800"
+    "height": "720"
 };
 if (!fs.existsSync(configPath)) {
   fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
