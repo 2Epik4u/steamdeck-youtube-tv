@@ -1,16 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const { ElectronBlocker } = require('@cliqz/adblocker-electron')
 const { fetch } = require('cross-fetch') // required 'fetch'
-var fs = require("fs");
-const configPath = "./yt-config.json";
-const defaultConfig = { // Steam deck default resolution isnt supported
-    "width": "1280",
-    "height": "720"
-};
-if (!fs.existsSync(configPath)) {
-  fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
-}
-const config = require(configPath);
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript  object is garbage collected.
@@ -19,8 +10,8 @@ let win;
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: config.width,
-    height: config.height,
+    width: 1280,
+    height: 720,
     icon: "icon.png",
     autoHideMenuBar: true,
     webPreferences: {
