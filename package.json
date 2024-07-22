@@ -26,6 +26,8 @@
     ]
   },
   "dependencies": {
+    "@cliqz/adblocker-electron": "^1.30.0",
+    "cross-fetch": "^4.0.0",
     "gamepad.js": "^2.1.0"
   }
 }

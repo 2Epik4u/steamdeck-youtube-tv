@@ -1,14 +1,26 @@
 const { app, BrowserWindow } = require("electron");
+const { ElectronBlocker } = require('@cliqz/adblocker-electron')
+const { fetch } = require('cross-fetch') // required 'fetch'
+var fs = require("fs");
+const configPath = "./yt-config.json";
+const defaultConfig = {
+    "width": "1280",
+    "height": "800"
+};
+if (!fs.existsSync(configPath)) {
+  fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
+}
+const config = require(configPath);
 
 // Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+// be closed automatically when the JavaScript  object is garbage collected.
 let win;
 
-function createWindow() {
+async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: config.width,
+    height: config.height,
     icon: "icon.png",
     autoHideMenuBar: true,
     webPreferences: {
@@ -19,11 +31,25 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-
+  
+  const blocker = await ElectronBlocker.fromLists(fetch, [
+    "https://cdn.jsdelivr.net/gh/uBlockOrigin/uAssetsCDN@main/thirdparties/easyprivacy.txt",
+    "https://cdn.jsdelivr.net/gh/uBlockOrigin/uAssetsCDN@main/filters/filters.min.txt",
+    "https://cdn.statically.io/gh/uBlockOrigin/uAssetsCDN/main/filters/badware.min.txt",
+    "https://ublockorigin.pages.dev/filters/privacy.min.txt",
+    "https://ublockorigin.pages.dev/filters/quick-fixes.min.txt",
+    "https://ublockorigin.pages.dev/filters/unbreak.min.txt",
+    "https://cdn.jsdelivr.net/gh/uBlockOrigin/uAssetsCDN@main/thirdparties/easylist.txt"
+  ]);
+  
+  
   // and load the index.html of the app.
   win.loadFile("index.html");
 
   win.maximize();
+
+  blocker.enableBlockingInSession(win.webContents.session);
+
 
   // Open the DevTools.
   // win.webContents.openDevTools();
@@ -58,6 +84,7 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
